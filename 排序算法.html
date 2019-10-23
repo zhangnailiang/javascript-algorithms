@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function CArray(numElements) {
+            this.dataStore = [];
+            this.pos = 0;
+            this.numElements = numElements;
+            this.insert = insert;
+            this.toString = toString;
+            this.clear = clear;
+            this.setData = setData;
+            this.swap = swap;
+            this.bubbleSort = bubbleSort
+            this.selectionSort = selectionSort;
+            this.insertionSort = insertionSort;
+            this.gaps = [5, 3, 1];//间隔初始化
+            this.setGaps = setGaps;
+            this.shellsort = shellsort;
+            this.shellsort1 = shellsort1;
+            this.mergeArrays = mergeArrays;
+            this.mergeSort = mergeSort;
+            this.mergeArrays1 = mergeArrays1;
+            this.mergeSort1 = mergeSort1;
+            for (var i = 0; i < numElements; i++) {
+                this.dataStore[i] = i;
+            }
+        }
+        function setData() {
+            for (var i = 0; i < this.numElements; i++) {
+                this.dataStore[i] = Math.floor(Math.random() * (this.numElements + 1));
+            }
+        }
+        function clear() {
+            for (var i = 0; i < this.numElements; i++) {
+                this.dataStore[i] = 0
+            }
+        }
+        function insert(element) {
+            this.dataStore[this.pos++] = element;
+
+
+        }
+        function toString() {
+            var reStr = '';
+            for (var i = 0; i < this.numElements; i++) {
+                reStr += this.dataStore[i] = " ";
+                if (i > 0 && i % 10 === 0) {
+                    reStr += '\n';
+                }
+            }
+            return reStr;
+        }
+        function swap(arr, index1, index2) {
+            var temp = arr[index1];
+            arr[index1] = arr[index2];
+            arr[index2] = temp;
+        }
+
+        //生成一组数据 (随机)
+        var numElements = 10;
+        const myNums = new CArray(numElements);
+        myNums.setData();
+
+
+        //冒泡排序
+        function bubbleSort() {
+            var numElements = this.dataStore.length;
+            let temp;
+            for (var outer = numElements; outer > 1; outer--) {
+                for (var inner = 0; inner < outer; inner++) {
+                    if (this.dataStore[inner] > this.dataStore[inner + 1]) {
+                        swap(this.dataStore, inner, inner + 1);
+                    }
+                }
+            }
+        }
+        // myNums.bubbleSort();
+
+
+        //选择排序
+        function selectionSort() {
+            var min, temp;
+            for (var outer = 0; outer < this.dataStore.length - 1; outer++) {
+                min = outer;
+                for (var inner = outer + 1; inner < this.dataStore.length; inner++) {
+                    if (this.dataStore[inner] < this.dataStore[min]) {
+                        min = inner
+                    }
+
+                }
+                swap(this.dataStore, outer, min)
+            }
+        }
+        // myNums.selectionSort();
+
+
+
+        /*
+           针对插入排序和希尔排序
+           插入排序： 
+              间隔 是 1 的希尔排序，看起来既是大小的交换又是插入因为间隔唯 1 
+            希尔排序：
+              一次向前移动所选间隔个位置和移动前额数据 进行比较 进行大小交换
+        */
+        //插入排序s
+        function insertionSort() {
+            var temp, inner;
+            for (var outer = 1; outer < this.dataStore.length; outer++) {
+                temp = this.dataStore[outer];
+                inner = outer;
+                while (inner > 0 && (this.dataStore[inner - 1] >= temp)) {
+                    this.dataStore[inner] = this.dataStore[inner - 1];
+                    inner--;
+                }
+                this.dataStore[inner] = temp
+            }
+        }
+
+        function setGaps(arr) {
+            this.gaps = arr
+        }
+
+        // myNums.insertionSort();
+
+
+        //希尔算法  
+        function shellsort() {
+            for (var g = 0; g < this.gaps.length; g++) {
+                for (var i = this.gaps[g]; i < this.dataStore.length; i++) {
+                    var temp = this.dataStore[i];
+                    for (var j = i; j >= this.gaps[g] && this.dataStore[j - this.gaps[g]] > temp; j -= this.gaps[g]) {
+                        this.dataStore[j] = this.dataStore[j - this.gaps[g]];
+                    }
+                    this.dataStore[j] = temp;
+                    // if (j >= this.gaps[g] && this.dataStore[j - this.gaps[g]] > temp) {
+                    //     this.dataStore[j] = this.dataStore[j - this.gaps[g]];
+                    //     j -= this.gaps[g]
+
+                    // }
+                    // this.dataStore[j] = temp;
+                }
+            }
+        }
+        // myNums.setGaps([6, 5, 1]);
+        // myNums.shellsort()
+
+
+        //动态的间隔希尔排序
+        function shellsort1() {
+            var N = this.dataStore.length;
+            var h = 1;
+
+            //保证间隔大于一  且小于长度  为整数
+            while (h < N / 3) {
+                h = h * 3 + 1;
+            }
+            while (h >= 1) {
+                for (var i = h; i < N; i++) {
+                    for (var j = i; j >= h && this.dataStore[j - h] > this.dataStore[j]; j = j - h) {
+                        swap(this.dataStore, j, j - h)
+                    }
+                }
+                h = (h - 1) / 3
+            }
+
+
+        }
+        // myNums.shellsort()
+
+
+        //非递归归并排序算法
+        function mergeSort(arr) {
+            if (arr.length < 2) {
+                return
+            }
+            var step = 1;
+            var left, right;
+            while (step < arr.length) {
+                left = 0;
+                right = step;
+                while (right + step <= arr.length) {
+                    mergeArrays(arr, left, left + step, right, right + step);
+                    left = right + step;
+                    right = left + step;
+
+                }
+                if (right < arr.length) {
+                    mergeArrays(arr, left, left + step, right, arr.length);
+                }
+                step *= 2;
+            }
+
+        }
+        function mergeArrays(arr, startLeft, stopLeft, startRight, stopRight) {
+            var rightArr = new Array(stopRight - startRight + 1)
+            var leftArr = new Array(stopLeft - startLeft + 1);
+            k = startRight;
+            for (var i = 0; i < rightArr.length - 1; i++) {
+                rightArr[i] = arr[k];
+                k++;
+            }
+            k = startRight;
+            for (var i = 0; i < leftArr - 1; i++) {
+                leftArr[i] = arr[k];
+            }
+            rightArr[rightArr.length - 1] = Infinity;
+            leftArr[leftArr.length - 1] = Infinity;
+            var n = 0;
+            var m = 0;
+            for (var k = startLeft; k < stopRight; k++) {
+                if (leftArr[m] <= rightArr[n]) {
+                    arr[k] = leftArr[m];
+                    m++
+                } else {
+                    arr[k] = rightArr[n];
+                    n++
+                }
+            }
+        }
+
+
+
+
+        //递归归并排序算法
+        function mergeSort1(arr) {
+            if (arr.length == 1) {
+                return arr;
+            }
+            var mid = Math.floor(arr.length / 2),
+                left = arr.slice(0, mid),
+                right = arr.slice(mid);
+            return mergeArrays1(mergeSort1(left), mergeSort1(right));
+        }
+
+        function mergeArrays1(left, right) {
+            var iL = 0,
+                iR = 0,
+                returnArr = [];
+            while (iL < left.length && iR < right.length) {
+                if (left[iL] < right[iR]) {
+                    returnArr.push(left[iL++])
+                } else {
+                    returnArr.push(right[iR++]);
+                }
+            }
+            while (iL < left.length) {
+                returnArr.push(left[iL++]);
+            }
+            while (iR < right.length) {
+                returnArr.push(right[iR++])
+            }
+            return returnArr
+        }
+        console.log(myNums.mergeSort1(myNums.dataStore))
+
+
+    </script>
+
+</body>
+
+</html>

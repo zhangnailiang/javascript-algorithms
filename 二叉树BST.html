@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function Node(data, left, right) {
+            this.data = data;
+            this.left = left;
+            this.right = right;
+            this.show = show;
+        }
+        function show() {
+            return this.data
+        }
+        function BST() {
+            this.root = null;
+            this.insert = insert
+            this.inOrder = inOrder;
+            this.getMax = getMax;
+            this.getMin = getMin;
+            this.Find = Find;
+            this.removeNode = removeNode;
+            this.returnNodeNum = returnNodeNum
+            this.countNode = countNode
+            this.bianNumber = bianNumber
+        }
+        function insert(data) {
+            var n = new Node(data, null, null);
+            if (this.root == null) {
+                this.root = n;
+            } else {
+                var current = this.root;
+                var parent;
+                while (true) {
+                    parent = current;
+                    if (data < current.data) {
+                        current = current.left
+                        if (current == null) {
+                            parent.left = n;
+                            break;
+                        }
+                    } else {
+                        current = current.right;
+                        if (current == null) {
+                            parent.right = n;
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+        //中序遍历的特点是要有一个根节点作为起始点， 
+
+
+
+
+
+        //生成二叉查找树
+        var nums = new BST();
+        nums.insert(23);
+        nums.insert(45);
+        nums.insert(16);
+        nums.insert(37);
+        nums.insert(3);
+        nums.insert(99);
+        nums.insert(22);
+        const arr = [];
+
+        //三种遍历BST的方法： 中序遍历  先序  后序 
+        //中序遍历
+        function inOrder(node) {
+            if (!(node == null)) {
+                inOrder(node.left);
+                console.log(node.show())
+                inOrder(node.right);
+
+            }
+        }
+        inOrder(nums.root)
+
+
+        //先序遍历
+        function preOrder(node) {
+            if (!(node === null)) {
+                console.log(node.show());
+                preOrder(node.left);
+                preOrder(node.right);
+            }
+        }
+        preOrder(nums.root)
+
+        //后序遍历
+        function postOrder(node) {
+            if (!(node === null)) {
+                postOrder(node.left);
+                postOrder(node.right);
+                console.log(node.show())
+            }
+        }
+        postOrder(nums.root)
+
+        //查找最大值和最小值
+        function getMin() {
+            var current = this.root;
+            while (!(current.left == null)) {
+                current = current.left;
+            }
+            return current.data
+        }
+        function getMax() {
+            var current = this.root;
+            while (!(current.right == null)) {
+                current = current.right;
+
+            }
+            return current.data
+        }
+        var minNode = nums.getMin();
+        var maxNode = nums.getMax();
+        console.log(maxNode, minNode);
+
+        //查找定值
+        function Find(data) {
+            var current = this.root;
+            while (current !== null) {
+                if (current.data == data) {
+                    return current
+                } else if (data < current.data) {
+                    current = current.left
+                } else {
+                    current = current.right;
+                }
+            }
+            return null
+        }
+        var needFindNode = nums.Find(23);
+        if (needFindNode !== null) {
+            console.log(needFindNode)
+        } else {
+            console.log("啥也没有")
+        }
+
+        function getMinNode(node) {
+            if (node.left == null) {
+                return node
+            }
+            return getMinNode(node.left)
+        }
+
+
+
+
+        //节点的赋值在 传参的时候进行了
+        //难点在于对选定节点的替换和删除
+        function removeNode(node, data) {
+            if (node == null) {
+                return null;
+            }
+            if (data == node.data) {
+                if (node.left == null && node.right == null) {
+                    return null
+                }
+                if (node.left == null) {
+                    return node.right;
+                }
+                if (node.right == null) {
+                    return node.left
+                }
+                var tempNode = getMinNode(node.right);
+                node.data = tempNode.data;
+                node.right = removeNode(node.right, tempNode.data);
+                return node;
+            } else if (data < node.data) {
+                node.left = removeNode(node.left, data);
+                return node
+            } else if (data > node.data) {
+                node.right = removeNode(node.right, data);
+                return node;
+            }
+        }
+        var deleteNode = nums.removeNode(nums.root, 22);
+
+
+        //记录一组数据集中数据出现的次数
+        function returnNodeNum(node) {
+            let number;
+            if (!(node == null)) {
+                number++;
+                returnNodeNum(node.left);
+                console.log(node.show())
+                returnNodeNum(node.right);
+            }
+            return number;
+
+        }
+
+
+
+
+        //放回BST中的节点的数量
+        function countNode(node) {
+            if (node == null) {
+                return 0
+            } else {
+                return 1 + countNode(node.left) + countNode(node.right)
+            }
+        }
+        console.log(nums.countNode(nums.root));
+
+
+        //方法返回BST中边数量
+        function bianNumber(node) {
+            console.log(node)
+            if (node.left == null && node.right == null) {
+                return 0
+            } else if (node.left !== null && node.right !== null) {
+                return 2 + bianNumber(node.left) + bianNumber(node.right);
+            } else if (node.left !== null && node.right == null) {
+                return 1 + bianNumber(node.left)
+            } else if (node.left == null && node.right !== null) {
+                return 1 + bianNumber(node.right);
+            }
+        }
+        console.log(nums.bianNumber(nums.root))
+
+        function getMax2() {
+            var current = this.root;
+            while (!(current !== null)) {
+                current = current.right
+            }
+            return current.data
+        }
+    </script>
+</body>
+
+</html>

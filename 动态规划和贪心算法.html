@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+
+        //斐波那契数列  从第三个开始正常加减
+        function dynFib(n) {
+            var val = [];
+            for (var i = 0; i <= n; i++) {
+                val[i] = 0;
+            }
+            if (n == 1 || n == 2) {
+                return 1;
+            } else {
+                val[1] = 1;
+                val[2] = 2;
+                for (var i = 3; i <= n; i++) {
+                    val[i] = val[i - 1] + val[i - 2]
+                }
+                return val[n - 1];
+            }
+        }
+        // console.log(dynFib(5));
+
+        //动态规划： 寻找最长的公共子串
+        function lcs(word1, word2) {
+            let max = 0;
+            let index = 0;
+            let lcsarr = new Array(word1.length + 1);
+            for (let i = 0; i < word1.length + 1; i++) {
+                lcsarr[i] = new Array(word2.length + 1);
+                for (let j = 0; j < word2.length + 1; j++) {
+                    lcsarr[i][j] = 0;
+                }
+            }
+            for (let i = 0; i <= word1.length; i++) {
+                for (let j = 0; j <= word2.length; j++) {
+                    if (i == 0 || j == 0) {
+                        lcsarr[i][j] = 0;
+                    } else {
+                        if (word1[i - 1] == word2[j - 1]) {
+                            lcsarr[i][j] = lcsarr[i - 1][j - 1] + 1;
+                        } else {
+                            lcsarr[i][j] = 0;
+                        }
+                    }
+
+                    if (max < lcsarr[i][j]) {
+                        max = lcsarr[i][j];
+                        index = i;
+                    }
+                }
+            }
+            let str = "";
+            if (max == 0) {
+                return;
+            } else {
+                for (let i = index - max; i < index; i++) {
+                    str += word1[i];
+                }
+                return str;
+            }
+
+        }
+        // console.log(lcs("abcdddd", "reereeabcyyh"));
+
+
+
+
+        //背包问题
+        /*
+            递归解决
+        */
+        const value = [4, 5, 10, 11, 13],
+            size = [3, 4, 7, 8, 9],
+            capacity = 16,
+            n = 5;
+        function knapsack(capacity, size, value, n) {
+            if (n == 0 || capacity == 0) {
+                return 0;
+            }
+
+            //n - 1 ： 因为size的index最大值是  4 n-1
+            if (size[n - 1] > capacity) {
+                return knapsack(capacity, size, value, n - 1);
+            } else {
+                return value[n - 1] + knapsack(capacity - size[n - 1], size, value, n - 1);
+                //  max(value[n - 1] + knapsack(capacity - size[n - 1], size, value, n - 1), knapsack(capacity, size, value, n - 1));
+            }
+        }
+        function max(a, b) {
+            return (a > b) ? a : b
+        }
+        // console.log(knapsack(capacity, size, value, n))
+
+        /*
+            动态规划
+        */
+
+        function knapsack(weights, values, w) {
+            var n = weights.length - 1;//获取物品个数
+            var f = [[]];//定义f的矩阵
+
+
+            for (var j = 0; j <= w; j++) {
+                if (j < weights[0]) {//容量当不下物品0的重量，价值为0
+                    f[0][j] = 0;
+                } else {
+                    f[0][j] = values[0];//否则容量为物品0的价值
+                }
+            }
+            for (var j = 0; j <= w; j++) {
+                for (var i = 1; i <= n; i++) {
+                    if (!f[i]) {//创建新的一行
+                        f[i] = [];
+                    }
+                    if (j < weights[i]) {//等于之前的最优值
+                        f[i][j] = f[i - 1][j];
+                    } else {
+                        f[i][j] = Math.max(f[i - 1][j], f[i - 1][j - weights[i]] + values[i]);
+                    }
+                }
+            }
+            // return f[n][w];
+        }
+        // console.log(knapsack(size, value, 5))
+
+
+
+        //贪心算法
+        /*
+           保证局部最优解  进而获得整体的最优解
+        */
+
+        function makeChange(origAmt, coins) {
+            var remainAmt = 0;
+            if (origAmt % .25 < origAmt) {
+                coins[3] = parseInt(origAmt / .25);
+                origAmt = origAmt % .25;
+            }
+            if (origAmt % .1 < origAmt) {
+                coins[2] = parseInt(origAmt / .1);
+                origAmt = origAmt % .1
+            }
+            if (origAmt % .05 < origAmt) {
+                coins[2] = parseInt(origAmt / .05);
+                origAmt = origAmt % .05
+            }
+            coins[0] = parseInt(origAmt / .01)
+        }
+        // var origAmt = 0.63;
+        // var coins = [];
+        // makeChange(origAmt, coins
+
+        //贪心算法  解决背包问题
+        function ksack(values, weights, capacity) {
+            const optionArr = weights.map((item, index) => {
+                return {
+                    value: values[index],
+                    weight: item
+                }
+            })
+            optionArr.sort((a, b) => {
+                return parseFloat(b.value / b.weight) - parseFloat(a.value / a.weight)
+            })
+            console.log(optionArr)
+            let selected = 0,
+                maxValue = 0,
+                n = optionArr.length
+            for (var i = 0; i < n && selected < capacity; i++) {
+                var weight = optionArr[i].weight,
+                    value = optionArr[i].value;
+                if (weight <= capacity - selected) {
+                    selected += weight;
+                    maxValue += value
+                } else {
+                    maxValue += value * ((capacity - selected) / weight)
+                    selected = capacity;
+                }
+            }
+            return maxValue
+
+        }
+        console.log(ksack([50, 140, 60, 60], [5, 20, 10, 12], 30));
+
+    </script>
+</body>
+
+</html>
