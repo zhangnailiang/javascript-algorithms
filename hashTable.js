@@ -9,6 +9,8 @@
 
 function HashTable() {
    this.table = new Array(137);
+
+   // 函数的定义 赋值给类
    this.simpleHash = simpleHash;
    this.showDistro = showDistro;
    this.put = put;
@@ -36,7 +38,7 @@ function get(key) {
    if (hash > -1) {
       for (var i = hash; this.table[hash] != undefined; i++) {
          if (this.table[hash] == key) {
-             return this.values[hash];
+            return this.values[hash];
          }
       }
    }
@@ -68,7 +70,7 @@ function betterHash(string) {
    }
    total = total % this.table.length;
    if (total < 0) {
-      total += this.table.length-1;
+      total += this.table.length - 1;
    }
    return parseInt(total);
 }
@@ -81,11 +83,11 @@ function betterHash(string) {
    }
    total = total % this.table.length;
    if (total < 0) {
-      total += this.table.length-1;
+      total += this.table.length - 1;
    }
    return parseInt(total);
 }
 
-function getRandomInt (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomInt(min, max) {
+   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
